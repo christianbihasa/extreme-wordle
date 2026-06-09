@@ -16,18 +16,18 @@ export default function Keyboard({ statuses, onKeyClick }) {
   };
 
   return (
-    <div className="flex flex-col gap-2 max-w-lg mx-auto my-6 px-2 w-full select-none">
+    <div className="flex flex-col gap-1 w-full max-w-md mx-auto my-1 px-1 select-none">
       {rows.map((row, rIdx) => (
-        <div key={rIdx} className="flex justify-center gap-1.5 w-full">
+        <div key={rIdx} className="flex justify-center gap-1 w-full">
           {row.map((key) => {
             const isWide = key === "ENTER" || key === "BACKSPACE";
             return (
               <button
                 key={key}
                 onClick={() => onKeyClick(key)}
-                className={`h-14 font-bold rounded flex items-center justify-center text-xs md:text-sm cursor-pointer transition-all uppercase ${getKeyColor(key)} ${
-                  isWide ? "flex-1 max-w-[5rem]" : "w-10"
-                }`}
+                className={`h-10 sm:h-12 font-bold rounded flex items-center justify-center text-[10px] sm:text-xs uppercase transition-all cursor-pointer ${getKeyColor(
+                  key,
+                )} ${isWide ? "flex-[1.5]" : "flex-1"}`}
               >
                 {key === "BACKSPACE" ? "⌫" : key}
               </button>

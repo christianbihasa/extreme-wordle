@@ -32,7 +32,10 @@ export default function Grid({
   };
 
   return (
-    <div className="flex flex-col gap-1.5 justify-center items-center my-4 px-4 w-full max-w-md mx-auto">
+    <div
+      className="flex flex-col gap-1 w-full h-full max-h-full justify-center items-center mx-auto p-1"
+      style={{ aspectRatio: `${wordLength} / ${totalRows}` }}
+    >
       {rows.map((_, rowIndex) => {
         const isSubmitted = rowIndex < guesses.length;
         const isCurrent = rowIndex === guesses.length;
@@ -53,10 +56,7 @@ export default function Grid({
         return (
           <div
             key={rowIndex}
-            className={`grid gap-1.5 w-full ${shouldShake ? "animate-shake" : ""}`}
-            style={{
-              gridTemplateColumns: `repeat(${wordLength}, minmax(0, 1fr))`,
-            }}
+            className={`flex gap-1 w-full flex-1 min-h-0 justify-center ${shouldShake ? "animate-shake" : ""}`}
           >
             {rowCells.map((char, cellIndex) => {
               let tileClass = "bg-transparent border-neutral-700 text-white";
@@ -77,7 +77,7 @@ export default function Grid({
               return (
                 <div
                   key={cellIndex}
-                  className={`aspect-square w-full flex items-center justify-center font-bold text-2xl border-2 uppercase select-none transition-all duration-300 rounded ${tileClass}`}
+                  className={`h-full aspect-square flex items-center justify-center font-bold text-[clamp(0.8rem,2.8vh,1.5rem)] border-2 uppercase select-none transition-all duration-300 rounded ${tileClass}`}
                 >
                   {char}
                 </div>
