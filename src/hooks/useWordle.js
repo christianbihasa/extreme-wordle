@@ -8,9 +8,12 @@ export function useWordle(wordLength) {
   const [gameStatus, setGameStatus] = useState("IN_PLAY"); // 'IN_PLAY' | 'WON' | 'LOST'
   const [invalidGuessRow, setInvalidGuessRow] = useState(null);
   const [statuses, setStatuses] = useState({});
+  const [isLoading, setIsLoading] = useState(true); // 👈 Track data sync state
 
   // 1. Load word banks AND check for saved games isolated by wordLength
   useEffect(() => {
+    setIsLoading(true); // Freeze interaction while network assets load
+
     fetch(`${import.meta.env.BASE_URL}data/words-${wordLength}.json`)
       .then((res) => res.json())
       .then((data) => {
@@ -30,32 +33,45 @@ export function useWordle(wordLength) {
           `extreme_keys_${wordLength}`,
         );
 
-        if (savedGuesses && savedStatus && savedSecret && savedStatuses) {
+        // THE VALIDATION FIX: Check existence AND confirm it matches the target row size
+        if (
+          savedGuesses &&
+          savedStatus &&
+          savedSecret &&
+          savedStatuses &&
+          savedSecret.length === wordLength
+        ) {
           setGuesses(JSON.parse(savedGuesses));
           setGameStatus(savedStatus);
           setSecretWord(savedSecret);
           setStatuses(JSON.parse(savedStatuses));
-          console.log("Restored Saved Target:", savedSecret);
+          console.log("Restored Valid Saved Target:", savedSecret);
         } else {
-          // Fresh game initialization
-          const randomTarget =
-            data.targets[
-              Math.floor(Math.random() * data.targets.length)
-            ].toUpperCase();
-          setSecretWord(randomTarget);
+          // Fresh game initialization or fallback if local cache is corrupted/mismatched
+          if (data.targets && data.targets.length > 0) {
+            const randomTarget =
+              data.targets[
+                Math.floor(Math.random() * data.targets.length)
+              ].toUpperCase();
+            setSecretWord(randomTarget);
+          }
           setGuesses([]);
           setGameStatus("IN_PLAY");
           setStatuses({});
-          console.log("New Target Word:", randomTarget);
         }
         setCurrentGuess("");
+        setIsLoading(false); // Unblock app layout gracefully
       })
-      .catch((err) => console.error("Error loading word file:", err));
+      .catch((err) => {
+        console.error("Error loading word file:", err);
+        setIsLoading(false);
+      });
   }, [wordLength]);
 
   // 2. Automatically sync state to LocalStorage whenever changes happen
   useEffect(() => {
-    if (!secretWord) return; // Prevent saving before data finishes fetching
+    // LENGTH VALIDATION GUARD: Stop syncing operations during layout switches
+    if (isLoading || !secretWord || secretWord.length !== wordLength) return;
 
     localStorage.setItem(
       `extreme_guesses_${wordLength}`,
@@ -67,7 +83,7 @@ export function useWordle(wordLength) {
       `extreme_keys_${wordLength}`,
       JSON.stringify(statuses),
     );
-  }, [guesses, gameStatus, statuses, secretWord, wordLength]);
+  }, [guesses, gameStatus, statuses, secretWord, wordLength, isLoading]);
 
   const evaluateGuessRow = (guess) => {
     const result = new Array(wordLength).fill("absent");
@@ -91,12 +107,15 @@ export function useWordle(wordLength) {
   };
 
   const handleInput = (key) => {
-    if (gameStatus !== "IN_PLAY") return;
+    if (isLoading || gameStatus !== "IN_PLAY") return;
     const upperKey = key.toUpperCase();
 
     if (upperKey === "ENTER") {
       if (currentGuess.length !== wordLength) return;
-      if (!wordLists.valid.includes(currentGuess)) {
+      if (
+        !wordLists.valid.includes(currentGuess.toLowerCase()) &&
+        !wordLists.valid.includes(currentGuess)
+      ) {
         setInvalidGuessRow(guesses.length);
         setTimeout(() => setInvalidGuessRow(null), 250);
         return;
@@ -134,9 +153,8 @@ export function useWordle(wordLength) {
     }
   };
 
-  // 3. Instant replay function: wipes local storage for this length and rolls a new word
   const resetGame = () => {
-    if (wordLists.targets.length === 0) return;
+    if (!wordLists.targets || wordLists.targets.length === 0) return;
 
     localStorage.removeItem(`extreme_guesses_${wordLength}`);
     localStorage.removeItem(`extreme_status_${wordLength}`);
@@ -155,12 +173,19 @@ export function useWordle(wordLength) {
     console.log("New Reset Target Word:", randomTarget);
   };
 
-  // 4. Fixed Dependency Array to prevent stale closures over guesses/statuses
   useEffect(() => {
     const handleKeyDown = (e) => handleInput(e.key);
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentGuess, gameStatus, secretWord, wordLists, guesses, statuses]);
+  }, [
+    currentGuess,
+    gameStatus,
+    secretWord,
+    wordLists,
+    guesses,
+    statuses,
+    isLoading,
+  ]);
 
   return {
     guesses,
@@ -170,6 +195,7 @@ export function useWordle(wordLength) {
     invalidGuessRow,
     handleInput,
     secretWord,
-    resetGame, // Passed out cleanly to your components
+    resetGame,
+    isLoading,
   };
 }

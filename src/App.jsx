@@ -15,7 +15,20 @@ export default function App() {
     secretWord,
     resetGame,
     handleInput,
+    isLoading, //
   } = useWordle(wordLength);
+
+  // Prevents rendering the grid layout until the state properties fully mirror the active target dimensions.
+  if (isLoading || !secretWord || secretWord.length !== wordLength) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[100dvh] bg-neutral-900 text-neutral-400 font-sans">
+        <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-xs font-bold uppercase tracking-widest animate-pulse">
+          Syncing Dictionary Category...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-[100dvh] overflow-hidden bg-neutral-900 text-neutral-100 font-sans select-none">
