@@ -11,7 +11,7 @@ export function useWordle(wordLength) {
 
   // 1. Load word banks AND check for saved games isolated by wordLength
   useEffect(() => {
-    fetch(`/data/words-${wordLength}.json`)
+    fetch(`${import.meta.env.BASE_URL}data/words-${wordLength}.json`)
       .then((res) => res.json())
       .then((data) => {
         setWordLists(data);
