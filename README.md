@@ -1,16 +1,42 @@
-# React + Vite
+# Extreme Wordle
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance, responsive, and ultra-flexible Wordle clone built with **React**, **Vite**, and **Tailwind CSS**. Unlike the standard game, **Extreme Wordle** allows players to dynamically scale the difficulty by switching word lengths on the fly, featuring bulletproof state isolation and asynchronous network safety guards.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+* **Dynamic Word Lengths (3L - 8L):** Instantly switch between 3 to 8-letter grids. The layout morphs on the fly to perfectly accommodate your chosen challenge level.
+* **Smart Session Persistence:** Game states are fully isolated by word length. Switching categories won't wipe your progress; your guesses, key colors, and secret words are saved independently in `LocalStorage` for every single tier.
+* **Asynchronous Safety Guard:** Built-in network loading state prevents UI crashing, layout blinking, or cross-pollination of storage keys during live dictionary fetching.
+* **Flawless Mobile Optimization:** Crafted using structural constraints (`min-h-0`, `shrink-0`, and `h-[100dvh]`) ensuring the grid and keyboard scale fluidly on short mobile devices without layout overflow.
+* **Dual Input Support:** Play seamlessly using your physical keyboard or the responsive on-screen keyboard.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Technology | Purpose |
+| :--- | :--- |
+| **React (v18+)** | Component-driven UI rendering and state management |
+| **Vite** | Lightning-fast development server and optimized production builds |
+| **Tailwind CSS** | Utility-first, fully responsive mobile styling |
+| **LocalStorage API** | Seamless cross-session persistent game loops |
+
+---
+
+## Project Structure
+
+```text
+src/
+├── assets/
+├── components/
+│   ├── Grid.jsx         # Flexbox/Grid responsive tile row system
+│   ├── Keyboard.jsx     # Virtual keyboard with dynamic key state shading
+│   └── Selector.jsx     # Tier/Range category toggle control panel
+├── hooks/
+│   └── useWordle.js     # Core engine: fetching, validation, validation guards, and hooks
+├── App.jsx              # Application root, mounting safety guards, and UI wrapper
+└── main.jsx             # Entry point
+public/
+└── data/                # Independent dictionary JSON files (words-3.json to words-8.json)
