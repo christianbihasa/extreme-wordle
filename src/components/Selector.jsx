@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Selector({ currentLength, setLength }) {
   const options = [3, 4, 5, 6, 7, 8];
