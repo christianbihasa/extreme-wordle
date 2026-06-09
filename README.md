@@ -40,3 +40,79 @@ src/
 └── main.jsx             # Entry point
 public/
 └── data/                # Independent dictionary JSON files (words-3.json to words-8.json)
+
+```
+
+---
+
+## Core Engineering Details
+
+### Storage & Boundary Validation Guard
+
+To prevent a classic asynchronous race condition where switching tabs might write stale properties to the wrong difficulty slot, the engine implements strict state tracking checks before committing properties to disk:
+
+```javascript
+// Excerpt from useWordle.js
+useEffect(() => {
+  if (isLoading || !secretWord || secretWord.length !== wordLength) return;
+
+  localStorage.setItem(`extreme_guesses_${wordLength}`, JSON.stringify(guesses));
+  localStorage.setItem(`extreme_secret_${wordLength}`, secretWord);
+}, [guesses, gameStatus, statuses, secretWord, wordLength, isLoading]);
+
+```
+
+---
+
+## Installation & Setup
+
+### Prerequisites
+
+Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
+
+### 1. Clone the Repository
+
+```bash
+git clone [https://github.com/YOUR_USERNAME/extreme-wordle.git](https://github.com/YOUR_USERNAME/extreme-wordle.git)
+cd extreme-wordle
+
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+
+```
+
+### 3. Run the Development Server
+
+```bash
+npm run dev
+
+```
+
+Open [http://localhost:5173](https://www.google.com/search?q=http://localhost:5173) in your browser to inspect the application.
+
+### 4. Build for Production
+
+```bash
+npm run build
+
+```
+
+The optimized output assets will be generated inside the `/dist` directory, ready to deploy to GitHub Pages, Vercel, or Netlify.
+
+---
+
+## How To Play
+
+1. Choose a word tier from the top selector panel (**3L** through **8L**).
+2. Type your guess using your physical keyboard or the on-screen display and press **Enter**.
+3. The color of the tiles will change to indicate how close your guess was to the secret word:
+* 🟩 **Green:** Letter is in the word and in the correct spot.
+* 🟨 **Yellow:** Letter is in the word but in a different spot.
+* ⬛ **Gray:** Letter is not in the word at all.
+
+
+4. Complete the word within **6 tries** to win! You can hit **Play Another** to clear that specific range category's memory and draw a new word.
