@@ -73,7 +73,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/YOUR_USERNAME/extreme-wordle.git](https://github.com/YOUR_USERNAME/extreme-wordle.git)
+git clone [https://github.com/YOUR_USERNAME/extreme-wordle.git]
 cd extreme-wordle
 
 ```
