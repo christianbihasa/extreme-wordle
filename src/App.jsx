@@ -32,14 +32,14 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-neutral-900 text-neutral-100 font-sans select-none">
+    <div className="flex flex-col h-[100dvh] bg-neutral-900 text-neutral-100 font-sans select-none">
       <header className="border-b border-neutral-800 py-2 text-center shrink-0">
         <h1 className="text-xl md:text-2xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500 uppercase">
           Extreme Wordle
         </h1>
       </header>
 
-      <main className="flex-1 flex flex-col justify-between max-w-md mx-auto w-full px-3 pb-3 min-h-0">
+      <main className="flex-1 flex flex-col justify-between [max-w-md] md:[max-w-lg] lg:[max-w-xl] mx-auto w-full px-3 pb-3 min-h-0">
         <div className="shrink-0 py-2">
           <Selector currentLength={wordLength} setLength={setWordLength} />
         </div>

@@ -31,6 +31,9 @@ export default function Grid({
     return result;
   };
 
+  // Tile font size shrinks as column count grows to prevent overflow
+  const tileFontSize = `clamp(0.6rem, ${3.5 / wordLength}vw + 0.4rem, ${1.6 - wordLength * 0.06}rem)`;
+
   return (
     <div
       className="flex flex-col gap-1 w-full h-full max-h-full justify-center items-center mx-auto p-1"
@@ -56,7 +59,8 @@ export default function Grid({
         return (
           <div
             key={rowIndex}
-            className={`flex gap-1 w-full flex-1 min-h-0 justify-center ${shouldShake ? "animate-shake" : ""}`}
+            style={{ display: "grid", gridTemplateColumns: `repeat(${wordLength}, 1fr)`, gap: "4px" }}
+            className={`w-full flex-1 min-h-0 ${shouldShake ? "animate-shake" : ""}`}
           >
             {rowCells.map((char, cellIndex) => {
               let tileClass = "bg-transparent border-neutral-700 text-white";
@@ -77,7 +81,8 @@ export default function Grid({
               return (
                 <div
                   key={cellIndex}
-                  className={`h-full aspect-square flex items-center justify-center font-bold text-[clamp(0.8rem,2.8vh,1.5rem)] border-2 uppercase select-none transition-all duration-300 rounded ${tileClass}`}
+                  style={{ fontSize: tileFontSize }}
+                  className={`h-full flex items-center justify-center font-bold border-2 uppercase select-none transition-all duration-300 rounded ${tileClass}`}
                 >
                   {char}
                 </div>
