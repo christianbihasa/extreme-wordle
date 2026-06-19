@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 @layer base {
+  html,
   body {
-    @apply bg-neutral-900 text-white min-h-screen overflow-x-hidden;
+    @apply bg-neutral-900 text-white;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
 }
 

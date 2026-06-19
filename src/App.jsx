@@ -1,8 +1,24 @@
-import React, { useState } from "react"; // 👈 Crucial structural import
+import React, { useState, useEffect } from "react"; // 👈 Crucial structural import
 import { useWordle } from "./hooks/useWordle";
 import Selector from "./components/Selector";
 import Grid from "./components/Grid";
 import Keyboard from "./components/Keyboard";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      // Portrait phone: aspect ratio < 0.75 (width/height) OR narrow width
+      const ratio = window.innerWidth / window.innerHeight;
+      const narrow = window.innerWidth <= 600;
+      setIsMobile(ratio < 0.75 || narrow);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
 
 export default function App() {
   const [wordLength, setWordLength] = useState(5);
@@ -18,6 +34,8 @@ export default function App() {
     isLoading,
   } = useWordle(wordLength);
 
+  const isMobile = useIsMobile();
+
   // 💡 SAFETY MOUNT GUARD:
   // Completely hides layout mismatches or mismatched dimensions during fetch loading periods.
   if (isLoading || !secretWord || secretWord.length !== wordLength) {
@@ -32,14 +50,14 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-neutral-900 text-neutral-100 font-sans select-none">
+    <div className="flex flex-col h-[100dvh] bg-neutral-900 text-neutral-100 font-sans select-none overflow-hidden">
       <header className="border-b border-neutral-800 py-2 text-center shrink-0">
         <h1 className="text-xl md:text-2xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500 uppercase">
           Extreme Wordle
         </h1>
       </header>
 
-      <main className="flex-1 flex flex-col justify-between [max-w-md] md:[max-w-lg] lg:[max-w-xl] mx-auto w-full px-3 pb-3 min-h-0">
+      <main className="flex-1 flex flex-col justify-between mx-auto w-full px-3 pb-3 min-h-0 max-w-xl">
         <div className="shrink-0 py-2">
           <Selector currentLength={wordLength} setLength={setWordLength} />
         </div>
@@ -51,6 +69,8 @@ export default function App() {
             currentGuess={currentGuess}
             secretWord={secretWord}
             invalidGuessRow={invalidGuessRow}
+            isMobile={isMobile}
+            onMobileInput={isMobile ? handleInput : undefined}
           />
         </div>
 
@@ -76,9 +96,19 @@ export default function App() {
           </div>
         )}
 
-        <div className="shrink-0 pt-2">
-          <Keyboard statuses={statuses} onKeyClick={handleInput} />
-        </div>
+        {/* Hide the virtual keyboard on mobile — user taps grid to use phone keyboard */}
+        {!isMobile && (
+          <div className="shrink-0 pt-2">
+            <Keyboard statuses={statuses} onKeyClick={handleInput} />
+          </div>
+        )}
+
+        {/* Mobile hint */}
+        {isMobile && gameStatus === "IN_PLAY" && (
+          <p className="text-center text-neutral-500 text-[10px] uppercase tracking-widest pb-1 shrink-0 animate-pulse">
+            Tap the grid to type
+          </p>
+        )}
       </main>
     </div>
   );
