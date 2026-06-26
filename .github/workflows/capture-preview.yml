@@ -17,7 +17,7 @@ jobs:
       - name: Initialize Node.js Environment
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
 
       - name: Install Playwright Automation Core
         run: |
@@ -25,7 +25,7 @@ jobs:
 
       - name: Generate Headless Browser Capture Script
         run: |
-          cat << 'EOF' > capture.js
+          cat << 'EOF' > capture.cjs
           const { chromium } = require('playwright-core');
           (async () => {
             const browser = await chromium.launch();
@@ -45,10 +45,10 @@ jobs:
           EOF
 
       - name: Execute Capture Execution Screen Vector
-        run: node capture.js
+        run: node capture.cjs
 
       - name: Clean Up Workspaces Script Engine
-        run: rm capture.js
+        run: rm capture.cjs
 
       - name: Commit and Push Updated Preview Asset
         run: |
