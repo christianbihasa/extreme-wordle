@@ -21,7 +21,8 @@ jobs:
 
       - name: Install Playwright Automation Core
         run: |
-          npm install playwright-core chromium
+          npm install playwright  
+          npx playwright install chromium
 
       - name: Generate Headless Browser Capture Script
         run: |
