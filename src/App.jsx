@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react"; // 👈 Crucial structural import
+import React, { useState, useEffect } from "react";
 import { useWordle } from "./hooks/useWordle";
 import Selector from "./components/Selector";
 import Grid from "./components/Grid";
 import Keyboard from "./components/Keyboard";
+import WelcomeModal from "./components/WelcomeModal";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -22,6 +23,7 @@ function useIsMobile() {
 
 export default function App() {
   const [wordLength, setWordLength] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     guesses,
     currentGuess,
@@ -36,7 +38,18 @@ export default function App() {
 
   const isMobile = useIsMobile();
 
-  // 💡 SAFETY MOUNT GUARD:
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("extreme_wordle_visited");
+    if (!hasVisited) {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+  const handleCloseModal = () => {
+    localStorage.setItem("extreme_wordle_visited", "true");
+    setIsModalOpen(false);
+  }
+
   // Completely hides layout mismatches or mismatched dimensions during fetch loading periods.
   if (isLoading || !secretWord || secretWord.length !== wordLength) {
     return (
@@ -45,6 +58,8 @@ export default function App() {
         <p className="text-xs font-bold uppercase tracking-widest animate-pulse">
           Syncing Game Layout...
         </p>
+        {/* Render modal inside loading state to capture first-time visitors instantly */}
+        <WelcomeModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
     );
   }
@@ -55,6 +70,14 @@ export default function App() {
         <h1 className="text-xl md:text-2xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500 uppercase">
           Extreme Wordle
         </h1>
+        {/* Info Trigger Button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 text-xs font-bold cursor-pointer transition-all active:scale-95"
+          title="View Rules & Info"
+        >
+          ℹ️
+        </button>
       </header>
 
       <main className="flex-1 flex flex-col justify-between mx-auto w-full px-3 pb-3 min-h-0 max-w-xl">
@@ -110,6 +133,8 @@ export default function App() {
           </p>
         )}
       </main>
+      {/* Modal mounted directly to the principal layout tree */}
+      <WelcomeModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 }
