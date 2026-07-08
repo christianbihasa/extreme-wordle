@@ -17,10 +17,13 @@ Game loops are strictly partitioned by word-length keys. Shifting between catego
 ### 3. Asynchronous Safety Guard
 Implemented explicit lifecycle locking thresholds to handle dictionary processing. Built-in network loading wrappers prevent layout flashing, flickering UI states, or the cross-pollination of storage arrays while asynchronous fetch promises resolve.
 
-### 4. Fluid Mobile Real-Estate Optimization
+### 4. Interactive Onboarding Experience
+Features an automated onboarding modal (`WelcomeModal`) that triggers dynamically on a user's first-ever page initialization. Backed by persistent state flags, it details the mechanics of the game's matrix configurations and isolated cross-session state vault persistence without intrusive loop disruptions. An accessible header utility button allows manual guide invocation at any time.
+
+### 5. Fluid Mobile Real-Estate Optimization
 Crafted utilizing strict CSS-first hardware-accelerated constraints (`min-h-0`, `shrink-0`, and dynamic viewport units `h-[100dvh]`). This prevents layout fracturing or browser navigation bars overflowing actionable touch spaces on short mobile screen margins.
 
-### 5. Automated CI/CD Ecosystem
+### 6. Automated CI/CD Ecosystem
 * **Production Ship-Loop:** Triggers automatically on git branch push cycles, initializing a clean dependency chain installation, executing production builds, and pushing compressed distribution bundles directly to the GitHub Pages CDN.
 * **Automated Viewport Capture:** Post-deployment triggers spawn a headless browser session utilizing **Playwright** to capture live pixel-perfect snapshots of active game matrices. These are committed automatically back to the repository asset tree to feed downstream portfolio marquee visual components.
 
@@ -35,7 +38,7 @@ Crafted utilizing strict CSS-first hardware-accelerated constraints (`min-h-0`, 
 | **Tailwind CSS v4** | CSS-first styling architecture utilizing native `@theme` design tokens and fluid grids |
 | **Playwright** | Asynchronous headless browser runner mapping responsive viewport snapshots |
 | **GitHub Actions** | Native cloud workflow orchestration decoupled for delivery and automated tracking |
-| **LocalStorage API** | Synchronous key-value client storage retaining isolated game matrix state arrays |
+| **LocalStorage API** | Synchronous client storage retaining isolated game state loops and onboarding flags |
 
 ---
 
@@ -53,10 +56,11 @@ Crafted utilizing strict CSS-first hardware-accelerated constraints (`min-h-0`, 
 │   ├── components/             # Isolated presentation and modular layout segments
 │   │   ├── Grid.jsx            # Dynamic Flexbox/Grid tile row matrix generator
 │   │   ├── Keyboard.jsx        # Virtual character controller with active state shading
-│   │   └── Selector.jsx        # Matrix range difficulty category control grid
+│   │   ├── Selector.jsx        # Matrix range difficulty category control grid
+│   │   └── WelcomeModal.jsx    # Onboarding guide modal featuring first-visit tracking flags
 │   ├── hooks/
 │   │   └── useWordle.js        # Central state loop engine: scoring, dictionary validation, and IO boundaries
-│   ├── App.jsx                 # Core shell layout and cross-functional view wrappers
+│   ├── App.jsx                 # Core shell layout, breakpoint detections, and cross-functional view wrappers
 │   ├── index.css               # Global baseline overrides, reset properties, and Tailwind v4 configurations
 │   └── main.jsx                # DOM tree root entry mount point
 ├── package.json                # Dependency metrics and runtime automation routing configurations
@@ -95,7 +99,7 @@ Ensure you have a modern instance of [Node.js](https://nodejs.org/) installed in
 ### 1. Repository Setup
 
 ```bash
-git clone [https://github.com/christianbihasa/extreme-wordle.git]
+git clone https://github.com/christianbihasa/extreme-wordle.git
 cd extreme-wordle
 
 ```
@@ -114,7 +118,7 @@ npm run dev
 
 ```
 
-Open the output loop local link (defaults to [http://localhost:5173](https://www.google.com/search?q=http://localhost:5173)) inside your browser to inspect or test code revisions.
+Open the output loop local link inside your browser to inspect or test code revisions (defaults to `http://localhost:5173`).
 
 ### 4. Compiling Production Builds Locally
 
@@ -138,3 +142,4 @@ Optimized, production-ready assets will compile cleanly inside the local `/dist`
 
 
 4. **Win Conditions:** Decipher the hidden word boundary parameters within **6 total attempts**. Click **Play Another** to safely scrub that specific categorization slot's runtime cache and draw a clean puzzle word.
+5. **View Onboarding Manual:** Click the info icon (**ℹ️**) in the top right of the application header at any time to re-invoke the structural rules or view persistence guidelines.
